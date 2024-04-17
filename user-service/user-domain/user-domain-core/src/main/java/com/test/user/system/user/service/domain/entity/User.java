@@ -2,7 +2,7 @@ package com.test.user.system.user.service.domain.entity;
 
 import java.util.UUID;
 
-public class User extends BaseEntity<UUID>{
+public class User extends BaseEntity{
     private String username;
     private String name;
     private String surname;
