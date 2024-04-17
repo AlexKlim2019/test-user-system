@@ -14,6 +14,17 @@ public class User extends BaseEntity{
         this.surname = surname;
     }
 
+    private User(Builder builder) {
+        setId(builder.id);
+        setUsername(builder.username);
+        setName(builder.name);
+        setSurname(builder.surname);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -36,5 +47,40 @@ public class User extends BaseEntity{
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+
+    public static final class Builder {
+        private UUID id;
+        private String username;
+        private String name;
+        private String surname;
+
+        private Builder() {
+        }
+
+        public Builder id(UUID val) {
+            id = val;
+            return this;
+        }
+
+        public Builder username(String val) {
+            username = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder surname(String val) {
+            surname = val;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
     }
 }
