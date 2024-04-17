@@ -5,14 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.test.user.system</groupId>
-        <artifactId>user-service</artifactId>
+        <artifactId>user-domain</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>user-domain</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>user-domain-core</module>
-    </modules>
+    <artifactId>user-domain-core</artifactId>
 
 </project>
