@@ -15,6 +15,7 @@
     <modules>
         <module>user-domain</module>
         <module>user-dataaccess</module>
+        <module>user-application</module>
     </modules>
 
 </project>
