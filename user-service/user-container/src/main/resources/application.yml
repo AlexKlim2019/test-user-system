@@ -1,0 +1,25 @@
+server:
+  port: 8082
+
+database-connection:
+  data-sources:
+    - name: first-db
+      url: jdbc:postgresql://localhost:5432/first_db
+      table: users
+      user: postgres
+      password: 1234
+      mapping:
+        id: id
+        username: username
+        name: name
+        surname: surname
+    - name: second-db
+      url: jdbc:postgresql://localhost:5432/second_db
+      table: users
+      user: postgres
+      password: 1234
+      mapping:
+        id: user_id
+        username: login
+        name: first_name
+        surname: last_name
