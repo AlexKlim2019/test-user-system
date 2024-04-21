@@ -1,6 +1,15 @@
 server:
   port: 8082
 
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/config_db
+    password: 1234
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 database-connection:
   data-sources:
     - name: first-db
