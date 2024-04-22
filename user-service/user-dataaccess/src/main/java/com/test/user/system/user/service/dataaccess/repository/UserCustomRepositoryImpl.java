@@ -7,6 +7,7 @@ import com.test.user.system.user.service.dataaccess.mapper.UserDataAccessMapper;
 import com.test.user.system.user.service.domain.dto.SearchParams;
 import com.test.user.system.user.service.domain.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -22,7 +24,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Repository
 @RequiredArgsConstructor
 public class UserCustomRepositoryImpl implements UserCustomRepository{
-    private static final String PREFIX_SQL_QUERY = "SELECT * FROM %s ";
+    private static final String PREFIX_SQL_QUERY = "SELECT * FROM ";
 
     private final DatabaseConnectionProperties dbConnections;
     private final UserDataAccessMapper userDataAccessMapper;
@@ -41,9 +43,11 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
 
         var dataSource = buildDataSource(dbProps);
         var jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        var sqlPrefix = buildSqlPrefix(dbProps.getTable());
+        var sql = buildSqlPrefix(dbProps.getTable())
+                .append(buildFilters(dbProps.getMapping(), params))
+                .toString();
         var rows = jdbcTemplate
-                .query(sqlPrefix, paramSource, new ColumnMapRowMapper()); // TODO make the sql query more save
+                .query(sql, new ColumnMapRowMapper()); // TODO make the sql query more save
         return rows
                 .stream()
                 .map(dbRows -> userDataAccessMapper.dbRecordToUser(dbProps.getMapping(), dbRows))
@@ -73,7 +77,32 @@ public class UserCustomRepositoryImpl implements UserCustomRepository{
                 .build();
     }
 
-    private String buildSqlPrefix(String tableName) {
-        return String.format(PREFIX_SQL_QUERY, tableName);
+    private StringBuilder buildSqlPrefix(String tableName) {
+        return new StringBuilder(PREFIX_SQL_QUERY).append(tableName);
+    }
+
+    private StringBuilder buildFilters(ColumnMapping columnNames, SearchParams params) {
+        var filters = new ArrayList<String>();
+        if (isNotBlank(params.name())) {
+            filters.add(String.format("%s = '%s'", columnNames.getName(), params.name()));
+        }
+        if (isNotBlank(params.username())) {
+            filters.add(String.format("%s = '%s'", columnNames.getUsername(), params.username()));
+        }
+        if (isNotBlank(params.surname())) {
+            filters.add(String.format("%s = '%s'", columnNames.getSurname(), params.surname()));
+        }
+
+        return filters.stream()
+                .map(StringBuilder::new)
+                .reduce(new StringBuilder(), (acc, cur) -> {
+            if (acc.isEmpty()){
+                acc.append(" WHERE ");
+            } else {
+                acc.append(" AND ");
+            }
+            acc.append(cur);
+            return acc;
+        });
     }
 }
