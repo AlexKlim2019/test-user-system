@@ -1,5 +1,6 @@
 package com.test.user.system.user.service.dataaccess.adapter;
 
+import com.test.user.system.user.service.dataaccess.config.DBContextHolder;
 import com.test.user.system.user.service.dataaccess.repository.UserCustomRepository;
 import com.test.user.system.user.service.domain.dto.SearchParams;
 import com.test.user.system.user.service.domain.entity.User;
